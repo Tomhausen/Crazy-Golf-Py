@@ -8,6 +8,7 @@ namespace SpriteKind {
 let friction = 0.98
 let is_moving = false
 let shot_power = 50
+let shot_mod = 4
 //  sprites
 let ball = sprites.create(assets.image`ball`, SpriteKind.Projectile)
 scene.cameraFollowSprite(ball)
@@ -64,7 +65,6 @@ function generate_path() {
         
     }
     tile = tiles.getTileLocation(column, row)
-    tiles.setTileAt(tile, assets.tile`hole`)
     tiles.placeOnTile(hole, tile)
     tilesAdvanced.setWallOnTilesOfType(assets.tile`rough`, true)
 }
@@ -89,8 +89,8 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function hit() {
     if (!is_moving) {
         direction = transformSprites.getRotation(aim_sprite)
         direction = spriteutils.degreesToRadians(direction)
-        ball.vx = Math.sin(direction) * shot_power * 4
-        ball.vy = Math.cos(direction) * -shot_power * 4
+        ball.vx = Math.sin(direction) * shot_power * shot_mod
+        ball.vy = -Math.cos(direction) * shot_power * shot_mod
         info.changeScoreBy(-100)
     }
     
@@ -146,10 +146,12 @@ function aim() {
 
 game.onUpdate(function tick() {
     
+    //  guided
     if (sprites.allOfKind(SpriteKind.path).length > 0) {
         sprites.destroyAllSpritesOfKind(SpriteKind.path)
     }
     
+    //  /guided
     is_moving = Math.abs(ball.vx) > 5 || Math.abs(ball.vy) > 5
     if (is_moving) {
         //  aim_sprite.set_flag(SpriteFlag.INVISIBLE, True)

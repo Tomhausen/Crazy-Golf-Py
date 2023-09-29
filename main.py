@@ -8,6 +8,7 @@ class SpriteKind:
 friction = 0.98
 is_moving = False
 shot_power = 50
+shot_mod = 4
 
 # sprites
 ball = sprites.create(assets.image("ball"), SpriteKind.projectile)
@@ -56,7 +57,6 @@ def generate_path():
         else:
             row = path_move_y(column, row)
     tile = tiles.get_tile_location(column, row)
-    tiles.set_tile_at(tile, assets.tile("hole"))
     tiles.place_on_tile(hole, tile)
     tilesAdvanced.set_wall_on_tiles_of_type(assets.tile("rough"), True)
     
@@ -77,8 +77,8 @@ def hit():
     if not is_moving:
         direction = transformSprites.get_rotation(aim_sprite)
         direction = spriteutils.degrees_to_radians(direction)
-        ball.vx = Math.sin(direction) * shot_power * 4
-        ball.vy = Math.cos(direction) * -shot_power * 4
+        ball.vx = Math.sin(direction) * shot_power * shot_mod
+        ball.vy = -Math.cos(direction) * shot_power * shot_mod
         info.change_score_by(-100)
 controller.A.on_event(ControllerButtonEvent.PRESSED, hit)
 
@@ -120,8 +120,10 @@ def aim():
 
 def tick():
     global is_moving
+    # guided
     if len(sprites.all_of_kind(SpriteKind.path)) > 0:
         sprites.destroy_all_sprites_of_kind(SpriteKind.path)
+    # /guided
     is_moving = Math.abs(ball.vx) > 5 or Math.abs(ball.vy) > 5
     if is_moving:
         # aim_sprite.set_flag(SpriteFlag.INVISIBLE, True)
