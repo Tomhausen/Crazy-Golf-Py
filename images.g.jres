@@ -1,0 +1,17 @@
+{
+    "image1": {
+        "data": "hwQQABAAAAAAAPD//w8AAADw/////w8AAP///////wDw////////D/D///////8P////////////////////////////////////////////////////////////////8P///////w/w////////DwD///////8AAPD/////DwAAAPD//w8AAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "hole"
+    },
+    "image2": {
+        "data": "hwQQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEREBAAAAABHREREAAAAQEREREQEAABHREdEREQAAERERERERAADREdER0REAABEREREREQAAEdER0RERAAAREREREREAABAR0RHRAQAAABEREREAAAAAEBERAQAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "ball"
+    },
+    "*": {
+        "mimeType": "image/x-mkcd-f4",
+        "dataEncoding": "base64",
+        "namespace": "myImages"
+    }
+}
