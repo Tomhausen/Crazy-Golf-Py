@@ -1,3 +1,9 @@
+//  guided
+namespace SpriteKind {
+    export const path = SpriteKind.create()
+}
+
+//  /guided
 //  variables
 let friction = 0.98
 let is_moving = false
@@ -10,9 +16,14 @@ ball.scale = 2 / 3
 ball.z = 5
 let hole = sprites.create(assets.image`hole`, SpriteKind.Player)
 //  aim sprite
-let aim_image = image.create(150, 150)
-aim_image.fillRect(74, 0, 2, 75, 15)
-let aim_sprite = sprites.create(aim_image)
+//  aim_image = image.create(150, 150) guided
+//  aim_image.fill_rect(74, 0, 2, 75, 15) guided
+//  aim_sprite = sprites.create(aim_image) guided
+let aim_sprite = sprites.create(assets.image`ball`)
+//  guided
+aim_sprite.setFlag(SpriteFlag.GhostThroughWalls, true)
+aim_sprite.setFlag(SpriteFlag.Invisible, true)
+//  /guided
 function path_move_x(column: number, row: number): number {
     let tile: tiles.Location;
     column += 1
@@ -84,6 +95,37 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function hit() {
     }
     
 })
+//  guided
+function path() {
+    let dot_sprite: Sprite;
+    let direction = transformSprites.getRotation(aim_sprite)
+    direction = spriteutils.degreesToRadians(direction)
+    let x_vector = Math.sin(direction)
+    let y_vector = -Math.cos(direction)
+    aim_sprite.setPosition(ball.x, ball.y)
+    let dot = image.create(2, 2)
+    dot.fill(15)
+    for (let path_length = 0; path_length < 20; path_length++) {
+        dot_sprite = sprites.create(dot, SpriteKind.path)
+        dot_sprite.setPosition(aim_sprite.x, aim_sprite.y)
+        for (let step_length = 0; step_length < shot_power / 5; step_length++) {
+            aim_sprite.x += x_vector
+            if (tiles.tileAtLocationIsWall(aim_sprite.tilemapLocation())) {
+                aim_sprite.x -= x_vector
+                x_vector *= -1
+            }
+            
+            aim_sprite.y += y_vector
+            if (tiles.tileAtLocationIsWall(aim_sprite.tilemapLocation())) {
+                aim_sprite.y -= y_vector
+                y_vector *= -1
+            }
+            
+        }
+    }
+}
+
+//  /guided
 function aim() {
     
     aim_sprite.setPosition(ball.x, ball.y)
@@ -104,17 +146,24 @@ function aim() {
 
 game.onUpdate(function tick() {
     
+    if (sprites.allOfKind(SpriteKind.path).length > 0) {
+        sprites.destroyAllSpritesOfKind(SpriteKind.path)
+    }
+    
     is_moving = Math.abs(ball.vx) > 5 || Math.abs(ball.vy) > 5
     if (is_moving) {
-        aim_sprite.setFlag(SpriteFlag.Invisible, true)
+        //  aim_sprite.set_flag(SpriteFlag.INVISIBLE, True)
         ball.sayText("")
     } else {
         ball.setVelocity(0, 0)
-        aim_sprite.setFlag(SpriteFlag.Invisible, false)
+        //  aim_sprite.set_flag(SpriteFlag.INVISIBLE, False)
         aim()
         ball.sayText(shot_power)
+        //  guided
+        path()
     }
     
+    //  /guided
     ball.vx *= friction
     ball.vy *= friction
 })
