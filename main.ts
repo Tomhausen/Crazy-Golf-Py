@@ -25,6 +25,15 @@ let aim_sprite = sprites.create(assets.image`ball`)
 aim_sprite.setFlag(SpriteFlag.GhostThroughWalls, true)
 aim_sprite.setFlag(SpriteFlag.Invisible, true)
 //  /guided
+//  guided
+//  status bar
+let power_bar = statusbars.create(150, 6, StatusBarKind.Energy)
+power_bar.setFlag(SpriteFlag.RelativeToCamera, true)
+power_bar.setPosition(80, 115)
+power_bar.max = 100
+power_bar.value = 0
+power_bar.setStatusBarFlag(StatusBarFlag.LabelAtEnd, true)
+//  /guided
 function path_move_x(column: number, row: number): number {
     let tile: tiles.Location;
     column += 1
@@ -142,8 +151,11 @@ function aim() {
     }
     
     shot_power = Math.constrain(shot_power, 1, 100)
+    //  guided
+    power_bar.value = shot_power
 }
 
+//  /guided
 game.onUpdate(function tick() {
     
     //  guided
@@ -155,12 +167,16 @@ game.onUpdate(function tick() {
     is_moving = Math.abs(ball.vx) > 5 || Math.abs(ball.vy) > 5
     if (is_moving) {
         //  aim_sprite.set_flag(SpriteFlag.INVISIBLE, True)
-        ball.sayText("")
+        //  ball.say_text("") # guided
+        power_bar.setFlag(SpriteFlag.Invisible, true)
     } else {
         ball.setVelocity(0, 0)
         //  aim_sprite.set_flag(SpriteFlag.INVISIBLE, False)
+        //  guided
+        power_bar.setFlag(SpriteFlag.Invisible, false)
+        //  /guided
         aim()
-        ball.sayText(shot_power)
+        //  ball.say_text(shot_power) # guided
         //  guided
         path()
     }

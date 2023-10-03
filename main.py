@@ -28,6 +28,16 @@ aim_sprite.set_flag(SpriteFlag.GHOST_THROUGH_WALLS, True)
 aim_sprite.set_flag(SpriteFlag.INVISIBLE, True)
 # /guided
 
+# guided
+# status bar
+power_bar = statusbars.create(150, 6, StatusBarKind.energy)
+power_bar.set_flag(SpriteFlag.RELATIVE_TO_CAMERA, True)
+power_bar.set_position(80, 115)
+power_bar.max = 100
+power_bar.value = 0
+power_bar.set_status_bar_flag(StatusBarFlag.LABEL_AT_END, True)
+# /guided
+
 def path_move_x(column, row):
     column += 1
     for i in range(-1, 2):
@@ -117,6 +127,9 @@ def aim():
     elif controller.down.is_pressed():
         shot_power -= 1
     shot_power = Math.constrain(shot_power, 1, 100)
+    # guided
+    power_bar.value = shot_power
+    # /guided
 
 def tick():
     global is_moving
@@ -127,12 +140,16 @@ def tick():
     is_moving = Math.abs(ball.vx) > 5 or Math.abs(ball.vy) > 5
     if is_moving:
         # aim_sprite.set_flag(SpriteFlag.INVISIBLE, True)
-        ball.say_text("")
+        # ball.say_text("") # guided
+        power_bar.set_flag(SpriteFlag.INVISIBLE, True)
     else:
         ball.set_velocity(0, 0)
         # aim_sprite.set_flag(SpriteFlag.INVISIBLE, False)
+        # guided
+        power_bar.set_flag(SpriteFlag.INVISIBLE, False)
+        # /guided
         aim()
-        ball.say_text(shot_power)
+        # ball.say_text(shot_power) # guided
         # guided
         path()
         # /guided
